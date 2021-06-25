@@ -4,19 +4,98 @@ namespace RailFenceCipher
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            string plainText = System.IO.File.ReadAllText(args[0]).ToLower();
+        static void Main()
+        { 
+            Console.WriteLine("1)Encrypt\n2)Decrypt");
 
-            int depth = Int32.Parse(args[1]);
+            int choice;
+            try
+            {
+                choice = Int32.Parse(Console.ReadLine());
+            }
+            catch
+            {
+                Console.WriteLine("Please enter a valid choice.");
+                return;
 
-            string cipherText = Encrypt(plainText, plainText, depth, 1, 1, true);
+            }
+            
+            string plainText, cipherText, file;
+            int depth;
+            if (choice == 1)
+            {
+                Console.WriteLine("Enter the path of the text file you wish to encrypt:");
+                file = Console.ReadLine();
+                try
+                {
+                    plainText = System.IO.File.ReadAllText(file).ToLower();
+                }
+                catch
+                {
+                    Console.WriteLine("Not a valid file.");
+                    return;
+                }
 
-            Console.WriteLine(cipherText);
+                Console.WriteLine("What depth would you like to use: ");
+                try
+                {
+                    depth = Int32.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Not a valid depth");
+                    return;
+                }
 
-            plainText = Decrypt(cipherText, depth - 1);
+                if(depth <= 1)
+                {
+                    Console.WriteLine("Not a valid depth");
+                    return;
+                }
 
-            Console.WriteLine(plainText);
+                cipherText = Encrypt(plainText, plainText, depth, 1, 1, true);
+                Console.WriteLine("Ciphertext: " + cipherText);
+                System.IO.File.WriteAllTextAsync("cipherTextOut.txt", cipherText);
+            }
+
+            else if (choice == 2)
+            {
+                Console.WriteLine("Enter the path of the text file you wish to decrypt:");
+                file = Console.ReadLine();
+                try
+                {
+                    cipherText = System.IO.File.ReadAllText(file).ToLower();
+                }
+                catch
+                {
+                    Console.WriteLine("Not a valid file.");
+                    return;
+                }
+
+                Console.WriteLine("What depth would you like to use: ");
+                try
+                {
+                    depth = Int32.Parse(Console.ReadLine());
+                }
+                catch
+                {
+                    Console.WriteLine("Not a valid depth");
+                    return;
+                }
+                if (depth <= 1)
+                {
+                    Console.WriteLine("Not a valid depth");
+                    return;
+                }
+                plainText = Decrypt(cipherText, depth - 1);
+                Console.WriteLine("PlainText: " + plainText);
+                System.IO.File.WriteAllTextAsync("plainTextOut.txt", plainText);
+            }
+
+            else
+            {
+                Console.WriteLine("Please enter a valid choice.");
+            }
 
         }
 
